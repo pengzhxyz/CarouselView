@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarouselView.Sample", "CarouselView.Sample\CarouselView.Sample.csproj", "{76EC59EF-6BEC-48BE-BC48-064D584BACD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarouselView.Controls", "CarouselView.Controls\CarouselView.Controls.csproj", "{A12C931C-3D0F-481B-BEAD-FE0B03322608}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7FF51CE8-7625-471B-9497-AB19776FC24A}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Debug|ARM.ActiveCfg = Debug|ARM
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Debug|ARM.Build.0 = Debug|ARM
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Debug|ARM.Deploy.0 = Debug|ARM
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Debug|x64.ActiveCfg = Debug|x64
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Debug|x64.Build.0 = Debug|x64
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Debug|x64.Deploy.0 = Debug|x64
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Debug|x86.ActiveCfg = Debug|x86
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Debug|x86.Build.0 = Debug|x86
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Debug|x86.Deploy.0 = Debug|x86
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Release|Any CPU.ActiveCfg = Release|x86
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Release|ARM.ActiveCfg = Release|ARM
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Release|ARM.Build.0 = Release|ARM
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Release|ARM.Deploy.0 = Release|ARM
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Release|x64.ActiveCfg = Release|x64
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Release|x64.Build.0 = Release|x64
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Release|x64.Deploy.0 = Release|x64
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Release|x86.ActiveCfg = Release|x86
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Release|x86.Build.0 = Release|x86
+		{76EC59EF-6BEC-48BE-BC48-064D584BACD9}.Release|x86.Deploy.0 = Release|x86
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Debug|ARM.ActiveCfg = Debug|ARM
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Debug|ARM.Build.0 = Debug|ARM
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Debug|x64.ActiveCfg = Debug|x64
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Debug|x64.Build.0 = Debug|x64
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Debug|x86.ActiveCfg = Debug|x86
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Debug|x86.Build.0 = Debug|x86
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Release|ARM.ActiveCfg = Release|ARM
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Release|ARM.Build.0 = Release|ARM
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Release|x64.ActiveCfg = Release|x64
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Release|x64.Build.0 = Release|x64
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Release|x86.ActiveCfg = Release|x86
+		{A12C931C-3D0F-481B-BEAD-FE0B03322608}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

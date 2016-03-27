@@ -1,0 +1,70 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CarouselView.Controls">
+
+    <Style TargetType="local:CarouselView" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:CarouselView">
+                    <Grid x:Name="RootGrid">
+                        <Rectangle x:Name="indicatorRect" Fill="#FFEA7474" Opacity="0" VerticalAlignment="Top" Width="10" Height="10"/>
+                        <Grid x:Name="canvas" Margin="0,0,0,0" VerticalAlignment="Stretch">
+                            <local:CarouselViewItem Width="{TemplateBinding ItemWidth}" HorizontalAlignment="Left"/>
+                            <local:CarouselViewItem Width="{TemplateBinding ItemWidth}"  HorizontalAlignment="Left"/>
+                            <local:CarouselViewItem Width="{TemplateBinding ItemWidth}"  HorizontalAlignment="Left"/>
+                            <local:CarouselViewItem Width="{TemplateBinding ItemWidth}"  HorizontalAlignment="Left"/>
+                            <local:CarouselViewItem Width="{TemplateBinding ItemWidth}"  HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:CarouselViewItem" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:CarouselViewItem">
+                    <Grid
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Mask"
+                                                   Storyboard.TargetProperty="Opacity">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="PointerOver">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Mask"
+                                                   Storyboard.TargetProperty="Opacity" >
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0.1" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Mask"
+                                                   Storyboard.TargetProperty="Opacity">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0.2" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Image Stretch="UniformToFill" Source="{TemplateBinding ImageSource}"/>
+                        <Rectangle x:Name="MaskBlack" Fill="Black" Opacity="{TemplateBinding BlackMaskOpacity}"/>
+
+                        <Rectangle x:Name="Mask" Fill="White" Opacity="0"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
