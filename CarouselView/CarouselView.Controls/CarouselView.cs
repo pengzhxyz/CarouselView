@@ -178,6 +178,7 @@ namespace CarouselView.Controls
             {
                 return;
             }
+            if (ItemImageSource.Count == 0) return;
 
             // get the source indexes
             int count = ItemImageSource.Count;
@@ -189,6 +190,11 @@ namespace CarouselView.Controls
             sindex_3 = (sindex + 1) > count - 1 ? (sindex + 1) - count : sindex + 1;
             sindex_4 = (sindex + 2) > count - 1 ? (sindex + 2) - count : sindex + 2;
 
+            // if count=1 all the sindexes = 0
+            if (count==1)
+            {
+                sindex_0 = sindex_1 = sindex_2 = sindex_3 = sindex_4 = 0;
+            }
             // get the UIelement indexes
             int index_0, index_1, index_2, index_3, index_4;
             index_0 = _selectedIndex - 2;
@@ -484,7 +490,6 @@ namespace CarouselView.Controls
             _itemVisualList[3].StartAnimation("Offset.X", _animation_3);
             _itemVisualList[4].StartAnimation("Offset.X", _animation_4);
             // Changed the _selectedIndex
-            //_selectedIndex = newindex;
             int oldindex = _selectedIndex;
             _selectedIndex = newindex;
             MeasureItemsPosition(newindex, oldindex);
