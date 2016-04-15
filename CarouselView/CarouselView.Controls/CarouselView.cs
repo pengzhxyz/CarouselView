@@ -129,6 +129,8 @@ namespace CarouselView.Controls
             _rootGrid.SizeChanged += (ss, ee) => 
             {
                 MeasureItemsPosition(_selectedIndex);
+                // Change the Clip to fit new size
+                _canvas.Clip = new RectangleGeometry() { Rect = RectHelper.FromCoordinatesAndDimensions(0, 0, (float)ee.NewSize.Width, (float)ee.NewSize.Height) };
             };
             //_canvas.SizeChanged += (ss, ee) => { MeasureItemsPosition(_selectedIndex, _selectedIndex); };
             this.Loaded += (ss,ee) => 
