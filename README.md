@@ -1,6 +1,7 @@
 ﻿# CarouselView
 An UWP carousel control supporting looping and based on composition api
 - It supports infinite looping scrolling
+- AutoSwitch supporting
 - It could show 3 pictures at the same time, rather than filpview which only shows one picture
 - Responsable to the container size
 - Touch or mouse wheel
@@ -32,17 +33,25 @@ and than set the `ItemImageSource`, which is a `List<string>` property, in code-
 		"https://img1.doubanio.com/view/photo/photo/public/p752907403.jpg"
 	};
 
-### About `ItemWidth` property
+### Advanced 
+
+#### About `ItemWidth` property
 ItemWidth defines the width of each item in the CarouselView.
 
 When the width of CarouselView is larger than `ItemWidth` the items' width is equal to `ItemWidth`, while items' width is equal to the width of CarouselView.
 
 **I recommend to set the ItemWidth to 500**, although the dafault value is 300.
 
-### About `ItemImageSource` property
+#### About `ItemImageSource` property
 it's a `List<string>` property providing the image url source.
 
 The count of `ItemImageSource` should be 3 at least, as you know.
+
+#### IsAutoSwitchEnabled property
+`bool` property, indicates if enable AutoSwitch, default is true
+
+#### AutoSwitchInterval property
+`TimeSpan` property, indicates how long to switch automaticlly, default is 7 seconds
 
 ## Further works
 - Apparently, an ItemClickedEvent or something like that are needed.

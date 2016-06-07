@@ -79,6 +79,56 @@ namespace CarouselView.Controls
 
         #endregion
 
+        #region IsAutoSwitchEnabled
+        public bool IsAutoSwitchEnabled
+        {
+            get { return (bool)GetValue(IsAutoSwitchEnableProperty); }
+            set { SetValue(IsAutoSwitchEnableProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsAutoSwitchEnable.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsAutoSwitchEnableProperty =
+            DependencyProperty.Register("IsAutoSwitchEnable", typeof(bool), typeof(CarouselView), new PropertyMetadata(true,(s,e)=> 
+            {
+                if (e.NewValue!=e.OldValue)
+                {
+                    if ((bool)e.NewValue)
+                    {
+                        (s as CarouselView)._dispatcherTimer.Start();
+                    }
+                    else
+                    {
+                        (s as CarouselView)._dispatcherTimer.Stop();
+                    }
+                }
+            }));
+
+        #endregion
+
+        #region AutoSwitchInterval
+
+        /// <summary>
+        /// default is 7 seconds
+        /// </summary>
+        public TimeSpan AutoSwitchInterval
+        {
+            get { return (TimeSpan)GetValue(AutoSwitchIntervalProperty); }
+            set { SetValue(AutoSwitchIntervalProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AutoSwitchInterval.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AutoSwitchIntervalProperty =
+            DependencyProperty.Register("AutoSwitchInterval", typeof(TimeSpan), typeof(CarouselView), new PropertyMetadata(new TimeSpan(0,0,7),(s,e)=> 
+            {
+                if (e.NewValue!=e.OldValue)
+                {
+                    (s as CarouselView)._dispatcherTimer.Interval = (TimeSpan)e.NewValue;
+                    (s as CarouselView)._dispatcherTimer.Start();
+                }
+            }));
+
+
+        #endregion
         #endregion
 
         Compositor _compositor;
@@ -91,6 +141,8 @@ namespace CarouselView.Controls
         float _x;
         int _selectedIndex;
         Panel _canvas, _rootGrid;
+        DispatcherTimer _dispatcherTimer; // for auto switch
+        bool _isAnimationRunning = false; // flag of animation running, for precessing mouse WheelChanged Event
 
         public CarouselView()
         {
@@ -140,7 +192,18 @@ namespace CarouselView.Controls
                 SetSelectedAppearance();
                 //MeasureItemsPosition(_selectedIndex);
             };
+
+            // setup the timer in order to autoswitch
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Tick += _dispatcherTimer_Tick;
+            _dispatcherTimer.Interval = this.AutoSwitchInterval;
+            if (this.IsAutoSwitchEnabled)
+            {
+                _dispatcherTimer.Start();
+            }
+
         }
+
         private void PrepareAnimations()
         {
             _animation = _compositor.CreateExpressionAnimation("touch.Offset.X");
@@ -331,6 +394,14 @@ namespace CarouselView.Controls
             return root;
         }
 
+        /// <summary>
+        /// key function of the carousel logic, before calling this, should comfirm:
+        /// 1. indicator's Offset.X is correct
+        /// 2. set the _selectedIndex and SelectedIndex to new index
+        /// note: _selectedIndex and SelectedIndex have diffrent meaning
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="oldindex"></param>
         private void MeasureItemsPosition(int index, int oldindex = -1)
         {
             System.Diagnostics.Debug.WriteLine($"MeasureItemsPosition _selectedIndex is {index} _oldselected is {oldindex}");
@@ -405,6 +476,8 @@ namespace CarouselView.Controls
                 _indicatorAnimation.Duration = TimeSpan.FromMilliseconds(300);
             }
 
+            _isAnimationRunning = true;
+
             // Start the indicator animiation
             var backScopedBatch = _compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
             _indicatorVisual.StartAnimation("Offset.X", _indicatorAnimation);
@@ -422,8 +495,8 @@ namespace CarouselView.Controls
                 SetItemsImageSource();
                 // Set Selected Item's appearance
                 SetSelectedAppearance();
-                // Start wheel event capturing
-                _canvas.PointerWheelChanged += Canvas_PointerWheelChanged;
+                // reset animation running flas
+                _isAnimationRunning = false;
             };
 
             // Set the ZIndex of the items
@@ -433,6 +506,15 @@ namespace CarouselView.Controls
             //Canvas.SetZIndex(_itemUIElementList[index_3], 1);
             //Canvas.SetZIndex(_itemUIElementList[index_4], 0);
 
+            // set the dispatcherTimer
+            if (IsAutoSwitchEnabled)
+            {
+                _dispatcherTimer.Start();
+            }
+            else if (_dispatcherTimer.IsEnabled)
+            {
+                _dispatcherTimer.Stop();
+            }
            
 
 
@@ -440,9 +522,13 @@ namespace CarouselView.Controls
 
         private void Canvas_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
         {
-            // Cancel the wheel event capturing when starting processing
+            // Handle the event
             e.Handled = true;
-            _canvas.PointerWheelChanged -= Canvas_PointerWheelChanged;
+
+            if (_isAnimationRunning)
+            {
+                return;
+            }
 
             // Stop the Animation and reset the postion of indicator
             _itemVisualList[0].StopAnimation("Offset.X");
@@ -496,6 +582,87 @@ namespace CarouselView.Controls
             _selectedIndex = newindex;
             MeasureItemsPosition(newindex, oldindex);
 
+        }
+
+        private void _dispatcherTimer_Tick(object sender, object e)
+        {
+            // Implement autoswitch
+            if (this.IsAutoSwitchEnabled)
+            {
+                GotoNext();
+            }
+            else
+            {
+                _dispatcherTimer.Stop();
+            }
+        }
+
+        private void GotoNext()
+        {
+            // Stop the Animation and reset the postion of indicator
+            _itemVisualList[0].StopAnimation("Offset.X");
+            _itemVisualList[1].StopAnimation("Offset.X");
+            _itemVisualList[2].StopAnimation("Offset.X");
+            _itemVisualList[3].StopAnimation("Offset.X");
+            _itemVisualList[4].StopAnimation("Offset.X");
+            _x = 0.0f;
+            _indicatorVisual.Offset = new Vector3(_x, 0.0f, 0.0f);
+
+            int newindex = _selectedIndex;
+            // get the index of next one
+            newindex = _selectedIndex + 1;
+            if (newindex > 4)
+            {
+                newindex = newindex - 5;
+            }
+            // Change the SelectedIndex
+            var k = SelectedIndex + 1;
+            SelectedIndex = k > ItemImageSource.Count - 1 ? k - ItemImageSource.Count : k;
+            
+            PrepareAnimations();
+            _itemVisualList[0].StartAnimation("Offset.X", _animation_0);
+            _itemVisualList[1].StartAnimation("Offset.X", _animation_1);
+            _itemVisualList[2].StartAnimation("Offset.X", _animation_2);
+            _itemVisualList[3].StartAnimation("Offset.X", _animation_3);
+            _itemVisualList[4].StartAnimation("Offset.X", _animation_4);
+            // Changed the _selectedIndex
+            int oldindex = _selectedIndex;
+            _selectedIndex = newindex;
+            MeasureItemsPosition(newindex, oldindex);
+        }
+
+        private void GotoPrevious()
+        {
+            // Stop the Animation and reset the postion of indicator
+            _itemVisualList[0].StopAnimation("Offset.X");
+            _itemVisualList[1].StopAnimation("Offset.X");
+            _itemVisualList[2].StopAnimation("Offset.X");
+            _itemVisualList[3].StopAnimation("Offset.X");
+            _itemVisualList[4].StopAnimation("Offset.X");
+            _x = 0.0f;
+            _indicatorVisual.Offset = new Vector3(_x, 0.0f, 0.0f);
+
+            int newindex = _selectedIndex;
+            // get the index of last one
+            newindex = _selectedIndex - 1;
+            if (newindex < 0)
+            {
+                newindex = newindex + 5;
+            }
+            // Change the SelectedIndex
+            var k = SelectedIndex - 1;
+            SelectedIndex = k < 0 ? k + ItemImageSource.Count : k;
+            
+            PrepareAnimations();
+            _itemVisualList[0].StartAnimation("Offset.X", _animation_0);
+            _itemVisualList[1].StartAnimation("Offset.X", _animation_1);
+            _itemVisualList[2].StartAnimation("Offset.X", _animation_2);
+            _itemVisualList[3].StartAnimation("Offset.X", _animation_3);
+            _itemVisualList[4].StartAnimation("Offset.X", _animation_4);
+            // Changed the _selectedIndex
+            int oldindex = _selectedIndex;
+            _selectedIndex = newindex;
+            MeasureItemsPosition(newindex, oldindex);
         }
     }
 }
