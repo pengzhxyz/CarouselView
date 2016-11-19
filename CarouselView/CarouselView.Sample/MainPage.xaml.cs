@@ -27,27 +27,33 @@ namespace CarouselView.Sample
         {
             this.InitializeComponent();
             this.Loaded += MainPage_Loaded;
+            carousel.ItemClick += Carousel_ItemClick;
+        }
+
+        private void Carousel_ItemClick(object arg1, CarouselViewItemClickEventArgs arg2)
+        {
+            System.Diagnostics.Debug.WriteLine($"Carousel ItemClick {(arg2.ClickItem as CarouselItemSource).Title}");
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
              carousel.ItemImageSource = new List<ICarouselViewItemSource>()
             {
-                 new CarouselItemSource() {
-                     ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p1204310498.jpg",
-                      },
+                 //new CarouselItemSource() {
+                 //    ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p1204310498.jpg",
+                 //     },
                  new CarouselItemSource() {
                      ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p1547743259.jpg",
-                     Title ="北燕南非，西风萧萧向何处" },
+                     Title ="北燕南飞，西风萧萧向何处1" },
                  new CarouselItemSource() {
                      ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p2183422782.jpg",
-                     Title ="北燕南非，西风萧萧向何处" },
+                     Title ="北燕南飞，西风萧萧向何处2" },
                  new CarouselItemSource() {
                      ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p832662844.jpg",
-                     Title ="北燕南非，西风萧萧向何处" },
+                     Title ="北燕南飞，西风萧萧向何处3" },
                  new CarouselItemSource() {
                      ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p752907403.jpg",
-                     Title ="北燕南非，西风萧萧向何处" },
+                     Title ="北燕南飞，西风萧萧向何处4" },
             };
         }
     }

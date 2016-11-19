@@ -31,6 +31,19 @@ namespace CarouselView.Controls
 
         #endregion
 
+        #region Title
+        public string Title
+        {
+            get { return (string)GetValue(TitleProperty); }
+            set { SetValue(TitleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TitleProperty =
+            DependencyProperty.Register("Title", typeof(string), typeof(CarouselViewItem), new PropertyMetadata(""));
+
+        #endregion
+
         #region BlackMaskOpacity
 
 
@@ -49,16 +62,21 @@ namespace CarouselView.Controls
 
         #endregion
 
-        #region Title
-        public string Title
+
+
+        #region ItemSource
+
+
+        public ICarouselViewItemSource ItemSource
         {
-            get { return (string)GetValue(TitleProperty); }
-            set { SetValue(TitleProperty, value); }
+            get { return (ICarouselViewItemSource)GetValue(ItemSourceProperty); }
+            set { SetValue(ItemSourceProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TitleProperty =
-            DependencyProperty.Register("Title", typeof(string), typeof(CarouselViewItem), new PropertyMetadata(""));
+        // Using a DependencyProperty as the backing store for ItemSource.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ItemSourceProperty =
+            DependencyProperty.Register("ItemSource", typeof(ICarouselViewItemSource), typeof(CarouselViewItem), new PropertyMetadata(null));
+
 
         #endregion
         public CarouselViewItem()

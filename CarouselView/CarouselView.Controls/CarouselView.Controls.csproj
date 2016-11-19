@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="CarouselView.cs" />
     <Compile Include="CarouselViewItem.cs" />
+    <Compile Include="CarouselViewItemClickEventArgs.cs" />
     <Compile Include="DependencyObjectExtend.cs" />
     <Compile Include="ICarouselViewItemSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

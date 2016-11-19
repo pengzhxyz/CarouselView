@@ -34,7 +34,20 @@ namespace CarouselView.Controls
 
         // Using a DependencyProperty as the backing store for SelectedIndex.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedIndexProperty =
-            DependencyProperty.Register("SelectedIndex", typeof(int), typeof(CarouselView), new PropertyMetadata(0));
+            DependencyProperty.Register("SelectedIndex", typeof(int), typeof(CarouselView), new PropertyMetadata(-1,(s,e)=> 
+            {
+                //var carousel = (s as CarouselView);
+                //if (carousel!=null)
+                //{
+                //    if (carousel._listbox!=null)
+                //    {
+                //        if (carousel._listbox.Items.Count>0)
+                //        {
+                //            carousel._listbox.SelectedIndex = (int)e.NewValue;
+                //        }
+                //    }
+                //}
+            }));
 
 
         #endregion
@@ -63,17 +76,21 @@ namespace CarouselView.Controls
         public List<ICarouselViewItemSource> ItemImageSource
         {
             get { return (List<ICarouselViewItemSource>)GetValue(ItemImageSourceProperty); }
-            set { SetValue(ItemImageSourceProperty, value); }
+            set
+            {
+                SetValue(ItemImageSourceProperty, value);
+                this.SetItemsImageSource();
+            }
         }
 
         // Using a DependencyProperty as the backing store for ItemImageSource.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemImageSourceProperty =
-            DependencyProperty.Register("ItemImageSource", typeof(List<string>), typeof(CarouselView), new PropertyMetadata(null,(s,e)=> 
+            DependencyProperty.Register("ItemImageSource", typeof(List<ICarouselViewItemSource>), typeof(CarouselView), new PropertyMetadata(null,(s,e)=> 
             {
-                if (e.NewValue!=e.OldValue)
-                {
-                    (s as CarouselView).SetItemsImageSource(true);
-                }
+                //if (e.NewValue!=e.OldValue)
+                //{
+                //    (s as CarouselView).SetItemsImageSource(true);
+                //}
             }));
 
 
@@ -131,6 +148,16 @@ namespace CarouselView.Controls
         #endregion
         #endregion
 
+        #region Event
+        public delegate void CarouselViewItemClickEventHandler(object sender, CarouselViewItemClickEventArgs e);
+        public event CarouselViewItemClickEventHandler ItemClick;
+        private void OnItemClick(ICarouselViewItemSource e)
+        {
+            if (e == null) return;
+            ItemClick?.Invoke(this, new CarouselViewItemClickEventArgs(e));
+        }
+        #endregion
+
         Compositor _compositor;
         //ContainerVisual _touchAreaVisual;
         Visual _touchAreaVisual, _indicatorVisual;
@@ -141,6 +168,7 @@ namespace CarouselView.Controls
         float _x;
         int _selectedIndex;
         Panel _canvas, _rootGrid;
+        ListBox _listbox;
         DispatcherTimer _dispatcherTimer; // for auto switch
         bool _isAnimationRunning = false; // flag of animation running, for precessing mouse WheelChanged Event
 
@@ -166,7 +194,10 @@ namespace CarouselView.Controls
             foreach (var item in _itemUIElementList)
             {
                 _itemVisualList.Add(ElementCompositionPreview.GetElementVisual(item));
+                // For ItemClick Event
+                item.Tapped += (s,e) => { OnItemClick((s as CarouselViewItem).ItemSource); };
             }
+            _listbox = this.GetTemplateChild("indexlistbox") as ListBox;
             
             // Event handlers
             this._canvas.ManipulationMode = ManipulationModes.TranslateX;
@@ -247,6 +278,10 @@ namespace CarouselView.Controls
 
             // get the source indexes
             int count = ItemImageSource.Count;
+            if (SelectedIndex<0)
+            {
+                SelectedIndex = 0;
+            }
             int sindex = SelectedIndex;
             int sindex_0, sindex_1, sindex_2, sindex_3, sindex_4;
             sindex_0 = sindex - 2 < 0 ? (sindex - 2) + count : sindex - 2;
@@ -272,20 +307,25 @@ namespace CarouselView.Controls
             index_4 = _selectedIndex + 2;
             if (index_4 > 4) index_4 = index_4 - 5;
 
-            _itemUIElementList[index_0].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_0].ImageSource));
-            _itemUIElementList[index_0].Title = ItemImageSource[sindex_0].Title;
-            // To avoid to flash (reason is unclear).
-            if (isinitial)
-            {
-                _itemUIElementList[index_1].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_1].ImageSource));
-                _itemUIElementList[index_1].Title = ItemImageSource[sindex_1].Title;
-                _itemUIElementList[index_2].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_2].ImageSource));
-                _itemUIElementList[index_2].Title = ItemImageSource[sindex_2].Title;
-                _itemUIElementList[index_3].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_3].ImageSource));
-                _itemUIElementList[index_3].Title = ItemImageSource[sindex_3].Title;
-            }
-            _itemUIElementList[index_4].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_4].ImageSource));
-            _itemUIElementList[index_4].Title = ItemImageSource[sindex_4].Title;
+            //_itemUIElementList[index_0].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_0].ImageSource));
+            //_itemUIElementList[index_0].Title = ItemImageSource[sindex_0].Title;
+            //// To avoid to flash (reason is unclear).
+            //if (isinitial)
+            //{
+            //    _itemUIElementList[index_1].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_1].ImageSource));
+            //    _itemUIElementList[index_1].Title = ItemImageSource[sindex_1].Title;
+            //    _itemUIElementList[index_2].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_2].ImageSource));
+            //    _itemUIElementList[index_2].Title = ItemImageSource[sindex_2].Title;
+            //    _itemUIElementList[index_3].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_3].ImageSource));
+            //    _itemUIElementList[index_3].Title = ItemImageSource[sindex_3].Title;
+            //}
+            //_itemUIElementList[index_4].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_4].ImageSource));
+            //_itemUIElementList[index_4].Title = ItemImageSource[sindex_4].Title;
+            _itemUIElementList[index_0].ItemSource = ItemImageSource[sindex_0];
+            _itemUIElementList[index_1].ItemSource = ItemImageSource[sindex_1];
+            _itemUIElementList[index_2].ItemSource = ItemImageSource[sindex_2];
+            _itemUIElementList[index_3].ItemSource = ItemImageSource[sindex_3];
+            _itemUIElementList[index_4].ItemSource = ItemImageSource[sindex_4];
         }
 
         private void SetSelectedAppearance()
