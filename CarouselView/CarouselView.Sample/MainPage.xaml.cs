@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CarouselView.Controls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,13 +31,23 @@ namespace CarouselView.Sample
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-             carousel.ItemImageSource = new List<string>()
+             carousel.ItemImageSource = new List<ICarouselViewItemSource>()
             {
-                 "https://img1.doubanio.com/view/photo/photo/public/p1204310498.jpg",
-                 "https://img1.doubanio.com/view/photo/photo/public/p1547743259.jpg",
-                 "https://img1.doubanio.com/view/photo/photo/public/p2183422782.jpg",
-                 "https://img1.doubanio.com/view/photo/photo/public/p832662844.jpg",
-                 "https://img1.doubanio.com/view/photo/photo/public/p752907403.jpg"
+                 new CarouselItemSource() {
+                     ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p1204310498.jpg",
+                      },
+                 new CarouselItemSource() {
+                     ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p1547743259.jpg",
+                     Title ="北燕南非，西风萧萧向何处" },
+                 new CarouselItemSource() {
+                     ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p2183422782.jpg",
+                     Title ="北燕南非，西风萧萧向何处" },
+                 new CarouselItemSource() {
+                     ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p832662844.jpg",
+                     Title ="北燕南非，西风萧萧向何处" },
+                 new CarouselItemSource() {
+                     ImageSource ="https://img1.doubanio.com/view/photo/photo/public/p752907403.jpg",
+                     Title ="北燕南非，西风萧萧向何处" },
             };
         }
     }

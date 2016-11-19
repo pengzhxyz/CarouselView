@@ -60,9 +60,9 @@ namespace CarouselView.Controls
         #region ItemImageSource
 
 
-        public List<string> ItemImageSource
+        public List<ICarouselViewItemSource> ItemImageSource
         {
-            get { return (List<string>)GetValue(ItemImageSourceProperty); }
+            get { return (List<ICarouselViewItemSource>)GetValue(ItemImageSourceProperty); }
             set { SetValue(ItemImageSourceProperty, value); }
         }
 
@@ -272,16 +272,20 @@ namespace CarouselView.Controls
             index_4 = _selectedIndex + 2;
             if (index_4 > 4) index_4 = index_4 - 5;
 
-            _itemUIElementList[index_0].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_0]));
+            _itemUIElementList[index_0].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_0].ImageSource));
+            _itemUIElementList[index_0].Title = ItemImageSource[sindex_0].Title;
             // To avoid to flash (reason is unclear).
             if (isinitial)
             {
-                _itemUIElementList[index_1].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_1]));
-                _itemUIElementList[index_2].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_2]));
-                _itemUIElementList[index_3].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_3]));
+                _itemUIElementList[index_1].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_1].ImageSource));
+                _itemUIElementList[index_1].Title = ItemImageSource[sindex_1].Title;
+                _itemUIElementList[index_2].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_2].ImageSource));
+                _itemUIElementList[index_2].Title = ItemImageSource[sindex_2].Title;
+                _itemUIElementList[index_3].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_3].ImageSource));
+                _itemUIElementList[index_3].Title = ItemImageSource[sindex_3].Title;
             }
-            _itemUIElementList[index_4].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_4]));
-
+            _itemUIElementList[index_4].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_4].ImageSource));
+            _itemUIElementList[index_4].Title = ItemImageSource[sindex_4].Title;
         }
 
         private void SetSelectedAppearance()
@@ -292,7 +296,7 @@ namespace CarouselView.Controls
             {
                 if (i==_selectedIndex)
                 {
-                    _itemUIElementList[i].BlackMaskOpacity = 0;
+                    _itemUIElementList[i].BlackMaskOpacity = 0.0;
                 }
                 else
                 {

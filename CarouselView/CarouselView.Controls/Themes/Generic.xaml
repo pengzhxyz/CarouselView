@@ -62,6 +62,10 @@
                         <Rectangle x:Name="MaskBlack" Fill="Black" Opacity="{TemplateBinding BlackMaskOpacity}"/>
 
                         <Rectangle x:Name="Mask" Fill="White" Opacity="0"/>
+                        <Border VerticalAlignment="Bottom" HorizontalAlignment="Center" >
+                            <TextBlock x:Name="TitleTB" Foreground="White" Text="{TemplateBinding Title}" 
+                                       HorizontalAlignment="Center" Margin="6"/>
+                        </Border>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
