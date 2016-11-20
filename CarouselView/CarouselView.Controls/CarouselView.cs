@@ -643,6 +643,11 @@ namespace CarouselView.Controls
 
         private void GotoNext()
         {
+            // Avoid null crash
+            if (ItemImageSource == null || ItemImageSource.Count == 0)
+            {
+                return;
+            }
             // Stop the Animation and reset the postion of indicator
             _itemVisualList[0].StopAnimation("Offset.X");
             _itemVisualList[1].StopAnimation("Offset.X");
@@ -677,6 +682,11 @@ namespace CarouselView.Controls
 
         private void GotoPrevious()
         {
+            // Avoid null crash
+            if (ItemImageSource == null || ItemImageSource.Count == 0)
+            {
+                return;
+            }
             // Stop the Animation and reset the postion of indicator
             _itemVisualList[0].StopAnimation("Offset.X");
             _itemVisualList[1].StopAnimation("Offset.X");
