@@ -114,8 +114,7 @@
                     <Grid
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        DataContext="{TemplateBinding ItemSource}">
+                        BorderThickness="{TemplateBinding BorderThickness}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal">
@@ -144,12 +143,12 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Image Stretch="UniformToFill" Source="{Binding ImageSource}"/>
+                        <Image Stretch="UniformToFill" Source="{TemplateBinding ImageSource}"/>
                         <Rectangle x:Name="MaskBlack" Fill="Black" Opacity="{TemplateBinding BlackMaskOpacity}"/>
 
                         <Rectangle x:Name="Mask" Fill="White" Opacity="0"/>
                         <Border VerticalAlignment="Bottom" HorizontalAlignment="Center" >
-                            <TextBlock x:Name="TitleTB" Foreground="White" Text="{Binding Title}" 
+                            <TextBlock x:Name="TitleTB" Foreground="White" Text="{TemplateBinding Title}" 
                                        HorizontalAlignment="Center" Margin="12,6,12,15"/>
                         </Border>
                     </Grid>

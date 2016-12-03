@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Text="北方有佳人，绝世而独立" HorizontalAlignment="Center" Margin="0,20"/>
-        <carousel:CarouselView x:Name="carousel" ItemWidth="500"  Grid.Row="1">
+        <carousel:CarouselView x:Name="carousel" ItemWidth="500"  Grid.Row="1" MaxHeight="300" VerticalAlignment="Center">
         </carousel:CarouselView>
         <TextBlock Text="一顾倾人城，再顾倾人国。" HorizontalAlignment="Center" Margin="0,20" Grid.Row="2"/>
     </Grid>

@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 // The Templated Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234235
 
@@ -75,7 +76,19 @@ namespace CarouselView.Controls
 
         // Using a DependencyProperty as the backing store for ItemSource.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemSourceProperty =
-            DependencyProperty.Register("ItemSource", typeof(ICarouselViewItemSource), typeof(CarouselViewItem), new PropertyMetadata(null));
+            DependencyProperty.Register("ItemSource", typeof(ICarouselViewItemSource), typeof(CarouselViewItem), new PropertyMetadata(null,(s,e)=> 
+            {
+                var item = (s as CarouselViewItem);
+                if (item != null)
+                {
+                    var source = e.NewValue as ICarouselViewItemSource;
+                    if (source != null)
+                    {
+                        item.Title = source.Title;
+                        item.ImageSource = new BitmapImage(new Uri(source.ImageSource));
+                    }
+                }
+            }));
 
 
         #endregion

@@ -36,17 +36,6 @@ namespace CarouselView.Controls
         public static readonly DependencyProperty SelectedIndexProperty =
             DependencyProperty.Register("SelectedIndex", typeof(int), typeof(CarouselView), new PropertyMetadata(-1,(s,e)=> 
             {
-                //var carousel = (s as CarouselView);
-                //if (carousel!=null)
-                //{
-                //    if (carousel._listbox!=null)
-                //    {
-                //        if (carousel._listbox.Items.Count>0)
-                //        {
-                //            carousel._listbox.SelectedIndex = (int)e.NewValue;
-                //        }
-                //    }
-                //}
             }));
 
 
@@ -87,10 +76,11 @@ namespace CarouselView.Controls
         public static readonly DependencyProperty ItemImageSourceProperty =
             DependencyProperty.Register("ItemImageSource", typeof(List<ICarouselViewItemSource>), typeof(CarouselView), new PropertyMetadata(null,(s,e)=> 
             {
-                //if (e.NewValue!=e.OldValue)
-                //{
-                //    (s as CarouselView).SetItemsImageSource(true);
-                //}
+                var carousel = s as CarouselView;
+                if (carousel != null)
+                {
+                    carousel.SetItemsImageSource();
+                }
             }));
 
 
@@ -176,6 +166,10 @@ namespace CarouselView.Controls
         {
             this.DefaultStyleKey = typeof(CarouselView);
             _selectedIndex = 2;
+            // setup the timer in order to autoswitch
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Tick += _dispatcherTimer_Tick;
+            _dispatcherTimer.Interval = this.AutoSwitchInterval;
         }
 
         protected override void OnApplyTemplate()
@@ -201,6 +195,7 @@ namespace CarouselView.Controls
             
             // Event handlers
             this._canvas.ManipulationMode = ManipulationModes.TranslateX;
+            
 
             _canvas.ManipulationStarted += Canvas_ManipulationStarted;
             _canvas.ManipulationDelta += Canvas_ManipulationDelta;
@@ -224,10 +219,7 @@ namespace CarouselView.Controls
                 //MeasureItemsPosition(_selectedIndex);
             };
 
-            // setup the timer in order to autoswitch
-            _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Tick += _dispatcherTimer_Tick;
-            _dispatcherTimer.Interval = this.AutoSwitchInterval;
+
             if (this.IsAutoSwitchEnabled)
             {
                 _dispatcherTimer.Start();
@@ -270,18 +262,13 @@ namespace CarouselView.Controls
         {
             System.Diagnostics.Debug.WriteLine("SetItemsImageSource");
             // Set the imagesource of each item. 
-            if (ItemImageSource==null)
-            {
+            if (ItemImageSource == null || _itemUIElementList == null || ItemImageSource.Count == 0 || _listbox == null || _listbox.ItemsSource == null)
                 return;
-            }
-            if (ItemImageSource.Count == 0) return;
-
+            System.Diagnostics.Debug.WriteLine($"SetItemImagesource,source[0] {ItemImageSource[0].Title}");
             // get the source indexes
             int count = ItemImageSource.Count;
             if (SelectedIndex<0)
-            {
                 SelectedIndex = 0;
-            }
             int sindex = SelectedIndex;
             int sindex_0, sindex_1, sindex_2, sindex_3, sindex_4;
             sindex_0 = sindex - 2 < 0 ? (sindex - 2) + count : sindex - 2;
@@ -307,25 +294,12 @@ namespace CarouselView.Controls
             index_4 = _selectedIndex + 2;
             if (index_4 > 4) index_4 = index_4 - 5;
 
-            //_itemUIElementList[index_0].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_0].ImageSource));
-            //_itemUIElementList[index_0].Title = ItemImageSource[sindex_0].Title;
-            //// To avoid to flash (reason is unclear).
-            //if (isinitial)
-            //{
-            //    _itemUIElementList[index_1].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_1].ImageSource));
-            //    _itemUIElementList[index_1].Title = ItemImageSource[sindex_1].Title;
-            //    _itemUIElementList[index_2].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_2].ImageSource));
-            //    _itemUIElementList[index_2].Title = ItemImageSource[sindex_2].Title;
-            //    _itemUIElementList[index_3].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_3].ImageSource));
-            //    _itemUIElementList[index_3].Title = ItemImageSource[sindex_3].Title;
-            //}
-            //_itemUIElementList[index_4].ImageSource = new BitmapImage(new Uri(ItemImageSource[sindex_4].ImageSource));
-            //_itemUIElementList[index_4].Title = ItemImageSource[sindex_4].Title;
             _itemUIElementList[index_0].ItemSource = ItemImageSource[sindex_0];
             _itemUIElementList[index_1].ItemSource = ItemImageSource[sindex_1];
             _itemUIElementList[index_2].ItemSource = ItemImageSource[sindex_2];
             _itemUIElementList[index_3].ItemSource = ItemImageSource[sindex_3];
             _itemUIElementList[index_4].ItemSource = ItemImageSource[sindex_4];
+            _listbox.SelectedIndex = SelectedIndex;
         }
 
         private void SetSelectedAppearance()
@@ -348,6 +322,7 @@ namespace CarouselView.Controls
         private void Canvas_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("Canvas_ManipulationInertiaStarted");
+            _dispatcherTimer.Stop();
             // Stop the Animation and reset the postion of indicator
             _itemVisualList[0].StopAnimation("Offset.X");
             _itemVisualList[1].StopAnimation("Offset.X");
@@ -376,19 +351,16 @@ namespace CarouselView.Controls
 
         }
 
-        //private void Canvas_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
-        //{
-        //    System.Diagnostics.Debug.WriteLine("Canvas_ManipulationInertiaStarting");
-        //}
         private void Canvas_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             double containerWidth = _canvas.ActualWidth;
             double itemWidth = _itemUIElementList[0].ActualWidth;
             double cleft = (containerWidth - itemWidth) / 2;
+            double threshold = itemWidth / 8;
             // evaluate the new selectedIndex
             int oldSelectedIndex = _selectedIndex;
-            var cha = _indicatorVisual.Offset.X - cleft;
-            if (cha <= -cleft)
+            var cha = _indicatorVisual.Offset.X;
+            if (cha <= -threshold)
             {
                 // new selcted item is the right item of current item
                 _selectedIndex = _selectedIndex + 1;
@@ -400,7 +372,7 @@ namespace CarouselView.Controls
                 var k = SelectedIndex + 1;
                 SelectedIndex = k > ItemImageSource.Count-1 ? k - ItemImageSource.Count : k;
             }
-            if (cha >= cleft)
+            if (cha >= threshold)
             {
                 // new selcted item is the left item of current item
                 _selectedIndex = _selectedIndex - 1;
@@ -410,22 +382,10 @@ namespace CarouselView.Controls
                 var k = SelectedIndex - 1;
                 SelectedIndex = k < 0 ? k + ItemImageSource.Count : k;
             }
-            else
-            {
-                //_animation.InsertKeyFrame(1.0f, 0.0f);
-            }
 
             MeasureItemsPosition(_selectedIndex, oldSelectedIndex);
-            //foreach (var item in _itemVisualList)
-            //{
-            //    item.StartAnimation("Offset.X", _animation);
-            //}
-            //var backScopedBatch = _compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
-            //_itemVisualList[4].StartAnimation("Offset.X", _animation);
-            //backScopedBatch.End();
-            //backScopedBatch.Completed += BackScopedBatch_Completed;
-            //_visual.StartAnimation("Offset.X", _animation);
-            //_touchAreaVisual.StartAnimation("Offset.X", _animation);
+            if (IsAutoSwitchEnabled)
+                _dispatcherTimer.Start();
         }
 
 
@@ -449,7 +409,6 @@ namespace CarouselView.Controls
         private void MeasureItemsPosition(int index, int oldindex = -1)
         {
             System.Diagnostics.Debug.WriteLine($"MeasureItemsPosition _selectedIndex is {index} _oldselected is {oldindex}");
-
             // Set the itemwidth
             // if the container width is larger than ItemWidtn, itemwidth = ItemWidth
             // else itemwidth = container
@@ -498,26 +457,27 @@ namespace CarouselView.Controls
             }
 
             int diff = index - oldindex;
+            double duration = 500;
             // new selected item equals to current item
             if (diff == 0)
             {
                 _indicatorAnimation = _compositor.CreateScalarKeyFrameAnimation();
                 _indicatorAnimation.InsertKeyFrame(1.0f, 0.0f);
-                _indicatorAnimation.Duration = TimeSpan.FromMilliseconds(300);
+                _indicatorAnimation.Duration = TimeSpan.FromMilliseconds(duration);
             }
             // new selected item is the right item of current item
             if (diff == 1 || diff < -1)
             {
                 _indicatorAnimation = _compositor.CreateScalarKeyFrameAnimation();
                 _indicatorAnimation.InsertKeyFrame(1.0f, (float)-itemWidth);
-                _indicatorAnimation.Duration = TimeSpan.FromMilliseconds(300);
+                _indicatorAnimation.Duration = TimeSpan.FromMilliseconds(duration);
             }
             // new selected item is the left one of current item
             if (diff == -1 || diff > 1)
             {
                 _indicatorAnimation = _compositor.CreateScalarKeyFrameAnimation();
                 _indicatorAnimation.InsertKeyFrame(1.0f, (float)itemWidth);
-                _indicatorAnimation.Duration = TimeSpan.FromMilliseconds(300);
+                _indicatorAnimation.Duration = TimeSpan.FromMilliseconds(duration);
             }
 
             _isAnimationRunning = true;
@@ -559,9 +519,6 @@ namespace CarouselView.Controls
             {
                 _dispatcherTimer.Stop();
             }
-           
-
-
         }
 
         private void Canvas_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
@@ -625,7 +582,6 @@ namespace CarouselView.Controls
             int oldindex = _selectedIndex;
             _selectedIndex = newindex;
             MeasureItemsPosition(newindex, oldindex);
-
         }
 
         private void _dispatcherTimer_Tick(object sender, object e)
